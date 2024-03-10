@@ -35,6 +35,20 @@ class AugmentedMatrix:
                 return False
         return True
         
+    def solve(self):
+        # perform RR (row reduction) algorithm on augmented matrix and return solution
+        # solution is the constant matrix of the augmented matrix once the RR algorithm terminates 
+        # sol is of the form: [s1, s2, .., sn]
+        print("performing row reduction to augmented matrix...")
+        while not self.rows.isRowReduced():
+            print(self.rows)
+            #TODO iteratively modify self.rows until it is row reduced
+        return getConstantMatrix()      
+    
+    def isRowReduced(self):
+        #TODO
+        return False
+
     def getConstantMatrix(self):
         #constant matrix is last column (rightmost column) of 2D grid
         return [row[len(row)-1] for row in self.rows]
@@ -61,35 +75,10 @@ class AugmentedMatrix:
         print("adding row "+str(r2)+" into row "+str(r1))
         for i in range(len(self.rows[r1])):
             self.rows[r1][i] += self.rows[r2][i]
-    
-    def printMatrix(self):
-        print(self.rows)
-    
-    def solve(self):
-        # perform RR (row reduction) algorithm on augmented matrix and return solution
-        # solution is the constant matrix of the augmented matrix once the RR algorithm terminates 
-        # sol is of the form: [s1, s2, .., sn]
-        print("performing row reduction to augmented matrix...")
-        while not self.rows.isRowReduced():
-            printMatrix()
-            #TODO iteratively modify self.rows until it is row reduced
-        return getConstantMatrix()      
-    
-    def isRowReduced(self):
-        #TODO
-        return False
 
 rows = [[2, -3, 5],[1, 2, -4]]
 m1 = AugmentedMatrix(rows)
 
 
 #m1.solve()
-#print(m1.getConstantMatrix())
-
-m1.printMatrix()
-m1.swapRows(0, 1)
-m1.printMatrix()
-m1.addRows(0, 1)
-m1.printMatrix()
-m1.multiplyRow(0, 2)
-m1.printMatrix()
+print(m1.getConstantMatrix())
