@@ -36,7 +36,7 @@ class AugmentedMatrix:
         return True
         
     def solve(self):
-        # perform RR (row reduction) algorithm and return solution
+        # perform RR (row reduction) algorithm on augmented matrix and return solution
         # solution is the constant matrix of the augmented matrix once the RR algorithm terminates 
         # sol is of the form: [s1, s2, .., sn]
         print("performing row reduction to augmented matrix...")
