@@ -56,40 +56,75 @@ class AugmentedMatrix:
         for i in range(len(self.rows[r])):
             self.rows[r][i] *= s
     
-    def addRows(self, r1, r2):
-        # r1 += r2, self.rows[r1] is changed
-        print("adding row "+str(r2)+" into row "+str(r1))
+    def addRows(self, r1, r2, c):
+        # r1 += c * r2, self.rows[r1] is changed
+        print("adding "+str(c)+" * row "+str(r2)+" into row "+str(r1))
         for i in range(len(self.rows[r1])):
-            self.rows[r1][i] += self.rows[r2][i]
+            self.rows[r1][i] += c*self.rows[r2][i]
     
     def printMatrix(self):
-        print(self.rows)
+        print("--------------------")
+        for row in self.rows:
+            print(row)
+        print("--------------------")
+    
     
     def solve(self):
         # perform RR (row reduction) algorithm on augmented matrix and return solution
         # solution is the constant matrix of the augmented matrix once the RR algorithm terminates 
         # sol is of the form: [s1, s2, .., sn]
         print("performing row reduction to augmented matrix...")
-        while not self.rows.isRowReduced():
-            printMatrix()
-            #TODO iteratively modify self.rows until it is row reduced
-        return getConstantMatrix()      
+        currentRow = 0
+        while currentRow<len(self.rows):
+            self.roundAllEntries()#to get rid of errors due to floats
+            if self.allZeroes(currentRow, 0):
+                return self.getConstantMatrix()
+            
+            self.printMatrix() 
+            
+            #print(currentRow)
+            row, col = self.getRowWithFirstNonZeroEntry(currentRow)
+            
+            self.swapRows(currentRow, row) # move row to top position
+            self.multiplyRow(currentRow, 1/self.rows[currentRow][col]) # set val to 1 by mutiplying val by 1/val (create leading 1)
+            for r in range(len(self.rows)):#subtract multiples of row with leading 1 from rows below it to make entries below leading 1 equal to 0
+                if r!= currentRow:
+                    self.addRows(r, currentRow, -self.rows[r][col])
+            
+            currentRow+=1
+ 
+        return self.getConstantMatrix()      
     
-    def isRowReduced(self):
-        #TODO
-        return False
+    def roundAllEntries(self):
+        for row in range(len(self.rows)):
+            for col in range(len(self.rows[0])):
+                self.rows[row][col] = round(self.rows[row][col], 5)
+                
+    
+    def allZeroes(self, startingRow, startingCol):
+        for r in range(startingRow, len(self.rows)):
+            for c in range(startingCol, len(self.rows[0])):
+                if self.rows[r][c]!=0:
+                    return False
+        return True        
 
-rows = [[2, -3, 5],[1, 2, -4]]
+
+    def getRowWithFirstNonZeroEntry(self, startingRow):
+        for col in range(len(self.rows[0])):
+            for row in range(startingRow, len(self.rows)):
+                if (self.rows[row][col]!=0):
+                    return row, col
+        raise Exception("should never get here")                     
+    
+
+rows = [
+        [1, -2, -1, 3, 1],
+        [2, -4, 1, 0, 5], 
+        [1, -2, 2, -3, 4]]
+#rows = [[2, 3, 4, 7], [1, 4, 5, 8], [5, 4, 3, 5]]
 m1 = AugmentedMatrix(rows)
 
+m1.printMatrix()
+m1.solve()
+m1.printMatrix()
 
-#m1.solve()
-#print(m1.getConstantMatrix())
-
-m1.printMatrix()
-m1.swapRows(0, 1)
-m1.printMatrix()
-m1.addRows(0, 1)
-m1.printMatrix()
-m1.multiplyRow(0, 2)
-m1.printMatrix()
