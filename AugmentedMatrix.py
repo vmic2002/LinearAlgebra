@@ -85,7 +85,8 @@ class AugmentedMatrix:
             #print(currentRow)
             row, col = self.getRowWithFirstNonZeroEntry(currentRow)
             
-            self.swapRows(currentRow, row) # move row to top position
+            if currentRow!=row:
+                self.swapRows(currentRow, row) # move row to top position
             self.multiplyRow(currentRow, 1/self.rows[currentRow][col]) # set val to 1 by mutiplying val by 1/val (create leading 1)
             for r in range(len(self.rows)):#subtract multiples of row with leading 1 from rows below it to make entries below leading 1 equal to 0
                 if r!= currentRow:
@@ -124,7 +125,6 @@ rows = [
 #rows = [[2, 3, 4, 7], [1, 4, 5, 8], [5, 4, 3, 5]]
 m1 = AugmentedMatrix(rows)
 
-m1.printMatrix()
 m1.solve()
 m1.printMatrix()
 
