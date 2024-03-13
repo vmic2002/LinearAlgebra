@@ -22,7 +22,7 @@ class AugmentedMatrix:
     # rows represents augmented matrix
     def __init__(self, rows):
         self.numEquations = len(rows)
-        self.numVariables = len(rows[0])-1
+        self.numVars = len(rows[0])-1
         self.rows = rows
         if not self.isValid():
             raise Exception("not a valid matrix, must input a 2d grid represented as list of list of numbers")
@@ -79,7 +79,7 @@ class AugmentedMatrix:
             self.roundAllEntries()#to get rid of errors due to floats
             self.printMatrix() 
             if self.allZeroes(currentRow, 0):
-                return self.getConstantMatrix()
+                break
             
                         
             #print(currentRow)
@@ -100,21 +100,48 @@ class AugmentedMatrix:
             print("System is consistent.")
             if self.hasOneSolution():
                 print("System has 1 solution")
-                #TODO find number of leading variables, assign non leading variables as parameters and solve for leading variables in terms of parameters
+                constantMatrix = self.getConstantMatrix()
+                for i in range(self.numVars):
+                    print("x"+str(i+1)+" = "+str(self.rows[i][self.numVars]))
             else:
                 print("System has infinitely many solutions")
-        return self.getConstantMatrix()      
+                #either a row has a leading one or it is a row entirely of zeroes
+                #find number of leading variables, assign non leading variables as parameters and solve for leading variables in terms of parameters
+                for row in self.rows:
+                    leadingOne = self.findLeadingOne(row)
+                    if leadingOne is not None:
+                        const="" if row[self.numVars]==0 else str(row[self.numVars])
+                        s="x"+str(leadingOne+1)+" ="
+                        rhs=const
+                        for d in range(leadingOne+1, len(row)-1):
+                            if row[d]!=0:
+                                cf=str(-row[d])
+                                if row[d]<0:
+                                    cf="+"+cf
+                                rhs+=" "+cf+"*x"+str(d+1)
+                        if rhs=="":
+                           rhs = " 0.0"
+                        print(s+rhs)
+                    else:
+                        break #if row is zero then return, all rows below that one will be zero as well
+        print("Done")      
 
+    def findLeadingOne(self, row):
+        #return index of leading 1 in row, return None if no leading 1 (row of all zeroes)
+        for c in range(len(row)):
+            if row[c]==1:
+                return c
+        return None
 
     def hasOneSolution(self):
         #assumes system is consistent
-        numVars = len(self.rows[0])-1
-        numEquations = len(self.rows)
-        if numEquations<numVars:
+        #numVars = len(self.rows[0])-1
+        #numEquations = len(self.rows)
+        if self.numEquations<self.numVars:
             return False
         #system has 1 solution when the coefficient matrix (up until row numVars) is equal to the identity matrix
-        for r in range(numVars):
-            for c in range(numVars):
+        for r in range(self.numVars):
+            for c in range(self.numVars):
                 if r==c and self.rows[r][c]!=1:
                     return False
                 elif r!=c and self.rows[r][c]!=0:
@@ -123,7 +150,7 @@ class AugmentedMatrix:
     
     def checkInconsistent(self):
         #system is inconsistent when the last row of self.rows = [0,0,0...1]
-        v = [0] * (len(self.rows[0])-1)
+        v = [0] * (self.numVars)
         v.append(1) 
         return v==self.rows[len(self.rows)-1]
 
@@ -155,9 +182,9 @@ rows = [
         [3, 1, 2, -1, 0]]
 rows1 = [[1,2,4],[3,6,18]]
 rows2 = [[1,1,3], [1,1,2]]
-rows3 = [[1,0,0,1],[0,1,0,1],[0,0,1,1]]
-#rows = [[2, 3, 4, 7], [1, 4, 5, 8], [5, 4, 3, 5]]
-m1 = AugmentedMatrix(rows3)
+rows3 = [[1,0,0,9],[0,1,0,56],[0,0,1,34]]
+rows4 = [[2, 1, -3, 0], [4, 2, -6, 0], [1, -1, 1, 0]]
+m1 = AugmentedMatrix(rows)
 
 
 m1.solve()
