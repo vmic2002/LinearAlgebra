@@ -93,7 +93,7 @@ class AugmentedMatrix:
                     self.addRows(r, currentRow, -self.rows[r][col])
             
             currentRow+=1
-        #done with row reduction algo, self.rows is in RREF
+        self.printMatrix() #done with row reduction algo, self.rows is in RREF
         if self.checkInconsistent():
             print("System is inconsistent. There are no solutions")
         else:
