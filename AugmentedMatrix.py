@@ -107,9 +107,14 @@ class AugmentedMatrix:
 
 
     def hasOneSolution(self):
-        #system has 1 solution when the coefficient matrix is equal to the identity matrix
-        for r in range(len(self.rows)):
-            for c in range(len(self.rows[0])-1):
+        #assumes system is consistent
+        numVars = len(self.rows[0])-1
+        numEquations = len(self.rows)
+        if numEquations<numVars:
+            return False
+        #system has 1 solution when the coefficient matrix (up until row numVars) is equal to the identity matrix
+        for r in range(numVars):
+            for c in range(numVars):
                 if r==c and self.rows[r][c]!=1:
                     return False
                 elif r!=c and self.rows[r][c]!=0:
@@ -152,7 +157,7 @@ rows1 = [[1,2,4],[3,6,18]]
 rows2 = [[1,1,3], [1,1,2]]
 rows3 = [[1,0,0,1],[0,1,0,1],[0,0,1,1]]
 #rows = [[2, 3, 4, 7], [1, 4, 5, 8], [5, 4, 3, 5]]
-m1 = AugmentedMatrix(rows)
+m1 = AugmentedMatrix(rows3)
 
 
 m1.solve()
