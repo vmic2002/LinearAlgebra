@@ -1,4 +1,8 @@
-"""algorithm for solving system of linear equations using RREF assuming the following:
+"""
+Row Reduction Algorithm on Augmented Matrix:
+1. To solve linear systems
+2. To find inverse of matrix
+algorithm for solving system of linear equations or finding a matrix's inverse using RREF assuming the following:
     A system (matrix) is represented as a list of rows:
     __    __
     |  R1  |
@@ -10,39 +14,45 @@
 
 1 row is 1 equation in a system of linear equations
 1 row represented as list of coefficients (left+right of equal sign)
+
+AugmentedMatrix represents the coefficient matrix and the constant matrix
+For linear systems, constant matrix has 1 col
+For finding inverse of a matrix, constant matrix is identity matrix I: nxn and coefficient matrix is nxn as well
+
+For system of linear equations:
 example: 2x -3y = 5 will be turned into 
     r = [2, -3 ,5]
     len(r) - 1  = number of variables 
     len(r) = num columns
+
+same reasoning for finding inverse of matrix by using Augmented matrix [A I]
+
 """    
+from Matrix import *
 class AugmentedMatrix:
+    # takes Matrix m as param to use m.rows
     # 2D list: list of rows (or list of ri where ri is list of coefficients)
     # [r1, r2, .., rn]
     # len(rows) = number of equations in system   
     # rows represents augmented matrix
-    def __init__(self, rows):
-        self.numEquations = len(rows)
-        self.numVars = len(rows[0])-1
-        self.rows = rows
-        if not self.isValid():
-            raise Exception("not a valid matrix, must input a 2d grid represented as list of list of numbers")
+    def __init__(self, matrix):
+        if not isinstance(matrix, Matrix):
+            raise Exception("AugmentedMatrix takes Matrix as input")
+        self.matrix = matrix
+        self.rows = matrix.rows
+        self.numEquations = len(self.rows)
+        self.numVars = len(self.rows[0])-1
         
-    
-    def isValid(self):
-        #checks wheter or not self.rows is a rectangular 2d array (each row must have the same number of columns)
-        for i in range(1,len(self.rows)):
-            if len(self.rows[i])!=len(self.rows[0]):
-                return False
-        return True
         
-    def getConstantMatrix(self):
+        
+    #def getConstantMatrix(self):
         #constant matrix is last column (rightmost column) of 2D grid
-        return [row[len(row)-1] for row in self.rows]
+     #   return [row[len(row)-1] for row in self.rows]
 
     #ELEMENTARY ROW OPERATIONS ON AUGMENTED MATRIX: 
     def swapRows(self, i, j):
         #modifies self.rows
-        print("swapping row "+str(i)+" and "+str(j))
+        #print("swapping row "+str(i)+" and "+str(j))
         temp = [c for c in self.rows[i]]
         for x in range(len(self.rows[i])):
             self.rows[i][x] = self.rows[j][x]
@@ -52,32 +62,27 @@ class AugmentedMatrix:
         if s==0:
             raise Exception("cannot multiply row by 0")
         #multiplies every entry of self.rows[r] by s
-        print("multiplying row "+str(r)+" by "+str(s))
+        #print("multiplying row "+str(r)+" by "+str(s))
         for i in range(len(self.rows[r])):
             self.rows[r][i] *= s
     
     def addRows(self, r1, r2, c):
         # r1 += c * r2, self.rows[r1] is changed
-        print("adding "+str(c)+" * row "+str(r2)+" into row "+str(r1))
+        #print("adding "+str(c)+" * row "+str(r2)+" into row "+str(r1))
         for i in range(len(self.rows[r1])):
             self.rows[r1][i] += c*self.rows[r2][i]
     
-    def printMatrix(self):
-        print("--------------------")
-        for row in self.rows:
-            print(row)
-        print("--------------------")
     
-    
-    def solve(self):
-        # perform RR (row reduction) algorithm on augmented matrix and return solution
+    def solve(self, inverseOrSystem):
+        # inverseOrSystem = True if this AugmentedMatrix is used to find inverse of matrix, self of form [ A I ]
+        # inverseOrSystem = False if this AugmentedMatrix is used to solve linear system, self of form [ A b ]
+        # perform RR (row reduction) algorithm on augmented matrix
         # solution is the constant matrix of the augmented matrix once the RR algorithm terminates 
-        # sol is of the form: [s1, s2, .., sn]
-        print("performing row reduction to augmented matrix...")
+        #print("performing row reduction to augmented matrix...")
         currentRow = 0
         while currentRow<len(self.rows):
             self.roundAllEntries()#to get rid of errors due to floats
-            self.printMatrix() 
+            #self.matrix.printMatrix() 
             if self.allZeroes(currentRow, 0):
                 break
             
@@ -93,38 +98,39 @@ class AugmentedMatrix:
                     self.addRows(r, currentRow, -self.rows[r][col])
             
             currentRow+=1
-        self.printMatrix() #done with row reduction algo, self.rows is in RREF
-        if self.checkInconsistent():
-            print("System is inconsistent. There are no solutions")
-        else:
-            print("System is consistent.")
-            if self.hasOneSolution():
-                print("System has 1 solution")
-                constantMatrix = self.getConstantMatrix()
-                for i in range(self.numVars):
-                    print("x"+str(i+1)+" = "+str(self.rows[i][self.numVars]))
+        #self.matrix.printMatrix() #done with row reduction algo, self.rows is in RREF
+        if not inverseOrSystem:
+            if self.checkInconsistent():
+                print("System is inconsistent. There are no solutions")
             else:
-                print("System has infinitely many solutions")
-                #either a row has a leading one or it is a row entirely of zeroes
-                #find number of leading variables, assign non leading variables as parameters and solve for leading variables in terms of parameters
-                for row in self.rows:
-                    leadingOne = self.findLeadingOne(row)
-                    if leadingOne is not None:
-                        const="" if row[self.numVars]==0 else str(row[self.numVars])
-                        s="x"+str(leadingOne+1)+" ="
-                        rhs=const
-                        for d in range(leadingOne+1, len(row)-1):
-                            if row[d]!=0:
-                                cf=str(-row[d])
-                                if row[d]<0:
-                                    cf="+"+cf
-                                rhs+=" "+cf+"*x"+str(d+1)
-                        if rhs=="":
-                           rhs = " 0.0"
-                        print(s+rhs)
-                    else:
-                        break #if row is zero then return, all rows below that one will be zero as well
-        print("Done")      
+                print("System is consistent.")
+                if self.hasOneSolution():
+                    print("System has 1 solution")
+                    #constantMatrix = self.getConstantMatrix()
+                    for i in range(self.numVars):
+                        print("x"+str(i+1)+" = "+str(self.rows[i][self.numVars]))
+                else:
+                    print("System has infinitely many solutions")
+                    #either a row has a leading one or it is a row entirely of zeroes
+                    #find number of leading variables, assign non leading variables as parameters and solve for leading variables in terms of parameters
+                    for row in self.rows:
+                        leadingOne = self.findLeadingOne(row)
+                        if leadingOne is not None:
+                            const="" if row[self.numVars]==0 else str(row[self.numVars])
+                            s="x"+str(leadingOne+1)+" ="
+                            rhs=const
+                            for d in range(leadingOne+1, len(row)-1):
+                                if row[d]!=0:
+                                    cf=str(-row[d])
+                                    if row[d]<0:
+                                        cf="+"+cf
+                                    rhs+=" "+cf+"*x"+str(d+1)
+                            if rhs=="":
+                               rhs = " 0.0"
+                            print(s+rhs)
+                        else:
+                            break #if row is zero then return, all rows below that one will be zero as well
+            print("Linear System solved")    
 
     def findLeadingOne(self, row):
         #return index of leading 1 in row, return None if no leading 1 (row of all zeroes)
@@ -173,19 +179,4 @@ class AugmentedMatrix:
             for row in range(startingRow, len(self.rows)):
                 if (self.rows[row][col]!=0):
                     return row, col
-        raise Exception("should never get here")                     
-    
-
-rows = [
-        [1, -1, 2, -1, 0],
-        [2, 2, 0, 1, 0], 
-        [3, 1, 2, -1, 0]]
-rows1 = [[1,2,4],[3,6,18]]
-rows2 = [[1,1,3], [1,1,2]]
-rows3 = [[1,0,0,9],[0,1,0,56],[0,0,1,34]]
-rows4 = [[2, 1, -3, 0], [4, 2, -6, 0], [1, -1, 1, 0]]
-m1 = AugmentedMatrix(rows)
-
-
-m1.solve()
-
+        raise Exception("should never get here")
