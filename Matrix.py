@@ -10,28 +10,54 @@ class Matrix:
         self.numCols = len(rows[0])    
    
     
-    def add(m1, m2):
-        #TODO IMPLEMENT
+    def sum(m1, m2):
         # RETURN NEW MATRIX THAT IS SUM OF m1 AND m2
         if not isinstance(m1, Matrix) or not isinstance(m2, Matrix):
-            raise Exception("Matrix.add takes Matrix, Matrix as param")
-        print("adding matrices")
+            raise Exception("Matrix.sum takes Matrix, Matrix as param")
+        if not Matrix.sameDimensions(m1, m2):
+            raise Exception("Matrix.sum takes matrices of same dimensions")
+        rows = []
+        for r in range(m1.numRows):
+            newRow = []
+            for c in range(m1.numCols):
+                 newRow.append(m1.rows[r][c]+m2.rows[r][c])
+            rows.append(newRow)
+        return Matrix(rows)
         
     def sub(m1, m2):
-        #TODO implememnt
         # return new matrix that is m1-m2
-        print("substracting two matrices")
         if not isinstance(m1, Matrix) or not isinstance(m2, Matrix):
-            raise Exception("Matrix.sub takes Matrix, Matrix as param") 
-    
-
+            raise Exception("Matrix.sub takes Matrix, Matrix as param")
+        if not Matrix.sameDimensions(m1, m2):
+            raise Exception("Matrix.sub takes matrices of same dimensions")
+        rows = []
+        for r in range(m1.numRows):
+            newRow = []
+            for c in range(m1.numCols):
+                newRow.append(m1.rows[r][c]-m2.rows[r][c])
+            rows.append(newRow)
+        return Matrix(rows)  
+ 
     def multiply(m1, m2):
-        #TODO 
         # return new matrix m1*m2
-        print("multiplying two matrices")
         if not isinstance(m1, Matrix) or not isinstance(m2, Matrix):
             raise Exception("Matrix.multiply takes Matrix, Matrix as param")
+        if not m1.numCols == m2.numRows:
+            raise Exception("Matrix.multiply takes matrices of correct dimensions for multiplication to be defined")
+        rows = []
+        for r in range(m1.numRows):
+            newRow = []
+            for c1 in range(m2.numCols):#c1 is to loop trhough m2 cols
+                dotProduct = 0
+                for c in range(m1.numCols):
+                    dotProduct += m1.rows[r][c]*m2.rows[c][c1]
+                newRow.append(dotProduct)
+            
+            rows.append(newRow)
+        return Matrix(rows)       
 
+
+ 
     def transpose(m):
         #TODO
         # return new matrix transpose of m
@@ -66,6 +92,10 @@ class Matrix:
             inverseMatrix.append(newRow)    
         return Matrix(inverseMatrix)
 
+    def sameDimensions(m1, m2):
+        if not isinstance(m1, Matrix) or not isinstance(m2, Matrix):
+            raise Exception("Matrix.sameDimensions takes two Matrices as input")
+        return m1.numRows == m2.numRows and m1.numCols == m2.numCols
 
     def isValid(self):
         #checks wheter or not self.rows is a rectangular 2d array (each row must have the same number of columns)
