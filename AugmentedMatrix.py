@@ -35,14 +35,17 @@ class AugmentedMatrix:
     # [r1, r2, .., rn]
     # len(rows) = number of equations in system   
     # rows represents augmented matrix
-    def __init__(self, matrix):
+    # inverseOrSystem = True if this AugmentedMatrix is used to find inverse of matrix, self of form [ A I ]
+    # inverseOrSystem = False if this AugmentedMatrix is used to solve linear system, self of form [ A b ]
+
+    def __init__(self, matrix, inverseOrSystem):
         if not isinstance(matrix, Matrix):
             raise Exception("AugmentedMatrix takes Matrix as input")
         self.matrix = matrix
         self.rows = matrix.rows
         self.numEquations = len(self.rows)
         self.numVars = len(self.rows[0])-1
-        
+        self.inverseOrSystem = inverseOrSystem 
         
         
     #def getConstantMatrix(self):
@@ -73,9 +76,7 @@ class AugmentedMatrix:
             self.rows[r1][i] += c*self.rows[r2][i]
     
     
-    def solve(self, inverseOrSystem):
-        # inverseOrSystem = True if this AugmentedMatrix is used to find inverse of matrix, self of form [ A I ]
-        # inverseOrSystem = False if this AugmentedMatrix is used to solve linear system, self of form [ A b ]
+    def solve(self):
         # perform RR (row reduction) algorithm on augmented matrix
         # solution is the constant matrix of the augmented matrix once the RR algorithm terminates 
         #print("performing row reduction to augmented matrix...")
@@ -99,7 +100,7 @@ class AugmentedMatrix:
             
             currentRow+=1
         #self.matrix.printMatrix() #done with row reduction algo, self.rows is in RREF
-        if not inverseOrSystem:
+        if not self.inverseOrSystem:
             if self.checkInconsistent():
                 print("System is inconsistent. There are no solutions")
             else:

@@ -41,7 +41,7 @@ class Matrix:
     def inverse(M):
         # return new Matrix() that is inverse of M
         # to find inverse, create AugmentedMatrix = [ M I ]
-        # then call solve func of AugmentedMatrix
+        # then call solve func of AugmentedMatrix to get [ I inverse(M) ]
         if not isinstance(M, Matrix):
             raise Exception("Matrix.inverse takes Matrix as param")
         rows = []
@@ -53,10 +53,11 @@ class Matrix:
                 newRow.append((1 if r==(c-M.numCols) else 0))
             rows.append(newRow)
         newMatrix = Matrix(rows)#newMatrix is [M I]
-        augmentedMatrix = AugmentedMatrix.AugmentedMatrix(newMatrix)
-        augmentedMatrix.solve(True) #after solve(), augmentedMatrix is [I inverse(M)]
-        #print("augmented matrix inverse")
-        #augmentedMatrix.matrix.printMatrix()
+        augmentedMatrix = AugmentedMatrix.AugmentedMatrix(newMatrix, True)
+        augmentedMatrix.solve() #after solve(), augmentedMatrix is [I inverse(M)]
+        #TODO NEED TO CHECK THAT AUGMENTEDMATRIX IS OF FORM [I INVERSE(M)]
+        #TODO IF LEFT PART IS NOT I, THEN THE MATRIX M IS NOT INVERTIBLE AND SHOULD RAISE EXCEPTION
+        #TODO IF LEFT PART IS I, THEN RIGHT PART WILL BE INVERSE(M) so M is invertible
         inverseMatrix = []
         for r in range(M.numRows):
             newRow = []

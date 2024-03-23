@@ -4,8 +4,8 @@ from AugmentedMatrix import *
 
 #to solve linear system:
 rows = [[2, 3, 1, 2], [1, 4, 5, 6], [1, 6, 3, 5]]
-m = AugmentedMatrix(Matrix(rows))
-m.solve(False)
+m = AugmentedMatrix(Matrix(rows), False) #False for linear system
+m.solve()
 
 
 """
@@ -16,5 +16,5 @@ m1 = Matrix(square)
 
 m1Inverse = Matrix.inverse(m1)
 m1Inverse.printMatrix()
-
 """
+
