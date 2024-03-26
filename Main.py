@@ -18,13 +18,19 @@ m1Inverse = Matrix.inverse(m1)
 m1Inverse.printMatrix()
 """
 
+#TODO DO LINEAR TRANSFORMATIONS NEXT AND MAYBE USE PYTHON LIBRARY TO GRAPH VECTORS
+#vector is matrix with all rows having size 1 (1 column)
 # matrix algebra
-m2 = Matrix([[1, 2, 3], [4, 5, 6]])
-m3 = Matrix([[7, 8], [9, 10], [11, 12]])
+A = Matrix([[2, 1], [-1, 4]])
+A.printMatrix()
+Matrix.inverse(Matrix.sub(Matrix.transpose(A), Matrix([[2,0],[0,2]]))).printMatrix()
 
-sumMatrix = Matrix.multiply(m2, m3)
-m2.printMatrix()
+
+#m3 = Matrix([[2], [3], [4]])
+
+#sumMatrix = Matrix.multiply(m2, m3)
+#m2.printMatrix()
 print("*")
-m3.printMatrix()
-print("=")
-sumMatrix.printMatrix()
+#m3.printMatrix()
+#print("=")
+#sumMatrix.printMatrix()

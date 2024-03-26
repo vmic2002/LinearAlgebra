@@ -64,6 +64,20 @@ class Matrix:
         if not isinstance(m, Matrix):
             raise Exception("Matrix.transpose takes Matrix as param")
 
+
+
+
+#        rows = [[0]*m.numRows]*m.numCols 
+        #for r in range(m.numRows):
+         #   for c in range(m.numCols):
+          #      rows[c][r] = m.rows[r][c]
+        rows = []
+        for c in range(m.numCols):
+            newRow = [m.rows[x][c] for x in range(m.numRows)]
+            rows.append(newRow)
+            
+        return Matrix(rows)
+
     def inverse(M):
         # return new Matrix() that is inverse of M
         # to find inverse, create AugmentedMatrix = [ M I ]
