@@ -56,26 +56,25 @@ class Matrix:
             rows.append(newRow)
         return Matrix(rows)       
 
-
- 
+    def power(m, e):
+        #returns new matrix which is m^e
+        if not isinstance(m, Matrix) or not isinstance(e, int) or e<1:
+             raise Exception("Matrix.power takes Matrix, int as param. int must be >=1")
+        rowsCpy = [[m.rows[r][c] for c in range(m.numCols)] for r in range(m.numRows)]
+        result = Matrix(rowsCpy)
+        for _ in range(e-1):
+            result = Matrix.multiply(result,m)
+        return result
+            
+         
     def transpose(m):
-        #TODO
         # return new matrix transpose of m
         if not isinstance(m, Matrix):
             raise Exception("Matrix.transpose takes Matrix as param")
-
-
-
-
-#        rows = [[0]*m.numRows]*m.numCols 
-        #for r in range(m.numRows):
-         #   for c in range(m.numCols):
-          #      rows[c][r] = m.rows[r][c]
         rows = []
         for c in range(m.numCols):
             newRow = [m.rows[x][c] for x in range(m.numRows)]
-            rows.append(newRow)
-            
+            rows.append(newRow) 
         return Matrix(rows)
 
     def inverse(M):
