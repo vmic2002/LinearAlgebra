@@ -8,7 +8,7 @@ m = AugmentedMatrix(Matrix(rows), False) #False for linear system
 m.solve()
 """
 
-"""
+
 #to find inverse of matrix
 square = [[2, 7, 1], [1, 4, -1], [1, 3, 0]]
 m1 = Matrix(square)
@@ -16,7 +16,7 @@ m1 = Matrix(square)
 
 m1Inverse = Matrix.inverse(m1)
 m1Inverse.printMatrix()
-"""
+
 
 #TODO DO LINEAR TRANSFORMATIONS NEXT AND MAYBE USE PYTHON LIBRARY TO GRAPH VECTORS
 #vector is matrix with all rows having size 1 (1 column)

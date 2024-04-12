@@ -77,19 +77,19 @@ class Matrix:
             rows.append(newRow) 
         return Matrix(rows)
 
-    def inverse(M):
+    def inverse(m):
         # return new Matrix() that is inverse of M
         # to find inverse, create AugmentedMatrix = [ M I ]
         # then call solve func of AugmentedMatrix to get [ I inverse(M) ]
-        if not isinstance(M, Matrix):
+        if not isinstance(m, Matrix):
             raise Exception("Matrix.inverse takes Matrix as param")
         rows = []
-        for r in range(M.numRows):
+        for r in range(m.numRows):
             newRow = []
-            for c in range(M.numCols):
-                newRow.append(M.rows[r][c])
-            for c in range(M.numCols, 2*M.numCols):
-                newRow.append((1 if r==(c-M.numCols) else 0))
+            for c in range(m.numCols):
+                newRow.append(m.rows[r][c])
+            for c in range(m.numCols, 2*m.numCols):
+                newRow.append((1 if r==(c-m.numCols) else 0))
             rows.append(newRow)
         newMatrix = Matrix(rows)#newMatrix is [M I]
         augmentedMatrix = AugmentedMatrix.AugmentedMatrix(newMatrix, True)
@@ -98,9 +98,9 @@ class Matrix:
         #TODO IF LEFT PART IS NOT I, THEN THE MATRIX M IS NOT INVERTIBLE AND SHOULD RAISE EXCEPTION
         #TODO IF LEFT PART IS I, THEN RIGHT PART WILL BE INVERSE(M) so M is invertible
         inverseMatrix = []
-        for r in range(M.numRows):
+        for r in range(m.numRows):
             newRow = []
-            for c in range(M.numCols, 2*M.numCols):
+            for c in range(m.numCols, 2*m.numCols):
                 newRow.append(augmentedMatrix.rows[r][c])
             inverseMatrix.append(newRow)    
         return Matrix(inverseMatrix)
