@@ -24,10 +24,11 @@ m1Inverse.printMatrix()
 #A = Matrix([[2, 1], [-1, 4]])
 #A.printMatrix()
 #Matrix.inverse(Matrix.sub(Matrix.transpose(A), Matrix([[2,0],[0,2]]))).printMatrix()
-P = Matrix([[0, 0.25], [1, 0.75]])
-s = Matrix([[0.5], [0.5]])
+#markov chains!:
+P = Matrix([[0.5, 0.25,  0.25], [0, 0.5, 0.25], [0.5, 0.25, 0.5]])
+s = Matrix([[1], [0], [0]])
 
-Matrix.multiply(Matrix.power(P, 12), s).printMatrix()
+Matrix.multiply(Matrix.power(P, 25), s).printMatrix()
 
 
 #m3 = Matrix([[2], [3], [4]])
